@@ -2,7 +2,7 @@ smart_borders for awesomewm
 ==================
 
 <p align="center">
-  <img src="https://i.imgur.com/ozjXeyi.gif">
+  <img src="https://s7.gifyu.com/images/smart_border_github.gif">
 </p>
 
 Features:
