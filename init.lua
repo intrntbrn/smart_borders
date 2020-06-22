@@ -210,7 +210,11 @@ local function new(config)
 		}
 	end
 	local button_right_click = cfg.right_click or function(c)
-		awful.menu(module.menu_client(c)):toggle()
+		if c.client_menu then
+			c.client_menu:hide()
+		end
+		c.client_menu = awful.menu(module.menu_client(c))
+		c.client_menu:toggle()
 	end
 
 	local resize_factor = cfg.resize_factor or 0.01
