@@ -195,19 +195,15 @@ local function new(config)
 		if c.maximized then
 			c.maximized = false
 		end
-		c:activate{
-			context = "titlebar",
-			action = "mouse_move"
-		}
+		c:emit_signal("request::activate", "mouse_click", {raise = true})
+		awful.mouse.client.move(c)
 	end
 	local button_double_click = cfg.button_double_click or function(c)
 		c.maximized = not c.maximized
 	end
 	local button_middle_click = cfg.middle_click or function(c)
-		c:activate{
-			context = "titlebar",
-			action = "mouse_resize"
-		}
+		c:emit_signal("request::activate", "mouse_click", {raise = true})
+		awful.mouse.client.resize(c)
 	end
 	local button_right_click = cfg.right_click or function(c)
 		if c.client_menu then
