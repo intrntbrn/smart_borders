@@ -10,6 +10,7 @@ Features:
 - Full titlebar functionality without sacrificing space
 - Improved mouse controls
 - Custom client menu
+- Anti-aliased rounded corners
 - Various configuration options
 - Easy installation
 
@@ -53,6 +54,7 @@ Customization:
 | `button_positions` | { "top" } | button positions |
 | `buttons` | { "floating", "minimize", "maximize", "close" } | possible values: { "floating", "minimize", "maximize", "close", "sticky", "top" } |
 | `border_width` | dpi(6) | width of border |
+| `rounded_corner` | dpi(0) | border radius of rounded corners |
 | `show_button_tooltips` | false | show a tooltip on button mouse over |
 | `show_title_tooltips` | false | show a tooltip of client title on border mouse over (might cause issues when sloppy focus mode (focus follows mouse) is enabled) |
 | `align_horizontal` | "right" | alignment of buttons on top and bottom positions. possible values: { "left", "center", "right" } |
@@ -102,7 +104,6 @@ require("smart_borders"){
 	buttons = { "floating", "minimize", "maximize", "close" },
 
 	layout = "fixed",
-	button_ratio = 0.3,
 	align_horizontal = "center",
 	button_size = 40,
 	button_floating_size = 60,
@@ -154,4 +155,3 @@ require("smart_borders"){
 }
 
 ```
-

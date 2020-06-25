@@ -135,11 +135,26 @@ function module.menu_client(c)
 	return list
 end
 
+
+local rounded_corner_shape = function(radius, position)
+	if position == "bottom" then
+		return function(cr, width, height)
+			gears.shape.partially_rounded_rect(cr, width, height, false, false, true, true, radius)
+		end
+	elseif position == "top" then
+		return function(cr, width, height)
+			gears.shape.partially_rounded_rect(cr, width, height, true, true, false, false, radius)
+		end
+	end
+	return nil
+end
+
 local function new(config)
 	local cfg = config or {}
 	local positions = cfg.positions or { "left", "right", "top", "bottom" }
 	local button_positions = cfg.button_positions or { "top" }
 	local border_width = cfg.border_width or dpi(6)
+	local rounded_corner = cfg.rounded_corner or nil
 
 	local color_normal = cfg.color_normal or "#56666f"
 	local color_focus = cfg.color_focus or "#a1bfcf"
@@ -375,7 +390,8 @@ local function new(config)
 		for _, pos in pairs(positions) do
 			local tb = awful.titlebar(c, {
 					size = border_width,
-					position = pos
+					position = pos,
+					bg = "#00000000"
 				})
 
 			local btn_layout
@@ -429,7 +445,9 @@ local function new(config)
 
 				tb:setup{
 					titlebar_widget,
-					layout = wibox.layout.stack
+					bg = "#00000000",
+					shape = rounded_corner and rounded_corner_shape(rounded_corner, pos) or nil,
+					widget = wibox.container.background()
 				}
 
 				local ratio_button_layout = wibox.widget.base.make_widget_declarative({
@@ -521,7 +539,9 @@ local function new(config)
 			else
 				tb:setup{
 					border_bg,
-					layout = wibox.layout.stack
+					bg = "#00000000",
+					shape = rounded_corner and rounded_corner_shape(rounded_corner, pos) or nil,
+					widget = wibox.container.background
 				}
 			end
 		end
