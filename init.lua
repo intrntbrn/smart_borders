@@ -158,6 +158,7 @@ local function new(config)
 
 	local color_normal = cfg.color_normal or "#56666f"
 	local color_focus = cfg.color_focus or "#a1bfcf"
+	local color_hover = cfg.color_hover or nil
 
 	local button_size = cfg.button_size or dpi(40)
 	local spacing_widget = cfg.spacing_widget or nil
@@ -365,6 +366,20 @@ local function new(config)
 		border_bg:connect_signal("button::press", function(_, _, _, button)
 			handle_button_press(c, button)
 		end)
+
+
+		if color_hover then
+			border_bg:connect_signal("mouse::enter", function()
+				border_bg.bg = color_hover
+			end)
+			border_bg:connect_signal("mouse::leave", function()
+				if client.focus == c then
+					border_bg.bg = color_focus
+				else
+					border_bg.bg = color_normal
+				end
+			end)
+		end
 
 		local border_expander, border_expander_center
 
