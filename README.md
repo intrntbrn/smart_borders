@@ -93,6 +93,37 @@ Customization:
 | `menu_selection_symbol` | "✔" | default menu selection indicator |
 | `resize_factor` | 0.01 | default client resize factor |
 | `stealth` | false | show only button colors on hover (set button colors to border colors) |
+| `snapping` | false | enable snapping mode (see snapping section) |
+| `snapping_max_distance` | nil | maximum snapping distance (mouse to client border) |
+| `snapping_center_mouse` | false | center mouse on client when snapping |
+
+Snapping: 
+------------
+When `useless_gaps` are disabled it is very easy and fast to control clients by using the mouse since you only have to move your mouse to the edge of the screen to hit the client border.
+However, when `useless_gaps` are enabled it can be frustrating to hit the border. 
+Therefore `snapping` will snap to the closest client if you click on the desktop/wallpaper.
+
+<p align="center">
+  <img src="https://s7.gifyu.com/images/snapping.gif">
+</p>
+
+Please note that `snapping` currently requires `awesomewm git` version.
+
+Unfortunately it is not possible to remove default mouse bindings, therefore you have to remove these on your own.
+
+Remove the following from `rc.lua`:
+```
+-- {{{ Mouse bindings
+-- @DOC_ROOT_BUTTONS@
+awful.mouse.append_global_mousebindings({
+    awful.button({ }, 3, function () mymainmenu:toggle() end),
+    awful.button({ }, 4, awful.tag.viewprev),
+    awful.button({ }, 5, awful.tag.viewnext),
+})
+-- }}}
+
+```
+
 
 Custom Buttons: 
 ------------

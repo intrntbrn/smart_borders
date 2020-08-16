@@ -2,12 +2,13 @@ local wibox = require("wibox")
 local gears = require("gears")
 local awful = require("awful")
 local theme = require("beautiful")
+local naughty = require("naughty")
+
 local dpi = theme.xresources.apply_dpi
 
 local module = {}
 
-local client = client
-local screen = screen
+local client, screen, mouse = client, screen, mouse
 
 local function ori(pos)
     if pos == "left" or pos == "right" then
@@ -222,6 +223,10 @@ local function new(config)
 
     local stealth = cfg.stealth or false
 
+    local snapping = cfg.snapping or false
+    local snapping_center_mouse = cfg.snapping_center_mouse or false
+    local snapping_max_distance = cfg.snapping_max_distance or nil
+
     local show_button_tooltips = cfg.show_button_tooltips or false -- tooltip might intercept mouseclicks; not recommended!
     local show_title_tooltip = cfg.show_title_tooltip or false -- might fuck up sloppy mouse focus; not recommended!
     menu_selection_symbol = cfg.menu_selection_symbol or " ✔"
@@ -270,13 +275,17 @@ local function new(config)
     end
 
     local button_funcs = {}
-    button_funcs[1] = function(c)
+
+    local left_click_function = function(c)
         if doubleclicked(c) then
             button_double_click(c)
         else
             button_left_click(c)
         end
     end
+
+    button_funcs[1] = left_click_function
+
     button_funcs[2] = function(c)
         button_middle_click(c)
     end
@@ -378,6 +387,74 @@ local function new(config)
 
     if type(button_positions) == "string" then
         button_positions = {button_positions}
+    end
+
+    if snapping then
+        if awful and awful.mouse and awful.mouse.append_global_mousebindings then
+            local mouse_closest_client = function()
+                local s = awful.screen.focused()
+                local m_x = mouse.coords().x
+                local m_y = mouse.coords().y
+
+                local closest_distance, closest_c
+
+                for _, c in ipairs(s.all_clients) do
+                    if c:isvisible() then
+                        local x = c.x + (c.width / 2)
+                        local y = c.y + (c.height / 2)
+                        local dx = math.max(math.abs(m_x - x) - (c.width / 2), 0)
+                        local dy = math.max(math.abs(m_y - y) - (c.height / 2), 0)
+                        local distance = math.sqrt(dx * dx + dy * dy)
+
+                        if (not snapping_max_distance or (distance <= snapping_max_distance)) and
+                            (not closest_distance or distance < closest_distance) then
+                            closest_distance = distance
+                            closest_c = c
+                        end
+                    end
+                end
+
+                return closest_c
+            end
+
+            awful.mouse.append_global_mousebindings({
+                awful.button({}, 1, function()
+                    local c = mouse_closest_client()
+                    if c then
+                        if snapping_center_mouse then
+                            mouse.coords {x = c.x + c.width / 2, y = c.y + c.height / 2}
+                        end
+                        left_click_function(c)
+                    end
+                end),
+                awful.button({}, 2, function()
+                    local c = mouse_closest_client()
+                    if c then
+                        button_middle_click(c)
+                    end
+                end),
+                awful.button({}, 3, function()
+                    local c = mouse_closest_client()
+                    if c then
+                        button_right_click(c)
+                    end
+                end),
+                awful.button({}, 4, function()
+                    local c = mouse_closest_client()
+                    if c then
+                        button_wheel_up(c)
+                    end
+                end),
+                awful.button({}, 5, function()
+                    local c = mouse_closest_client()
+                    if c then
+                        button_wheel_down(c)
+                    end
+                end)
+            })
+        else
+            naughty.notify({title = "smart_borders", text = "snapping requires awesomewm git version!", timeout = 0})
+        end
     end
 
     local smart_border_titlebars = function(c)
