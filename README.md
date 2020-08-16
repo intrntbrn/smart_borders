@@ -94,6 +94,24 @@ Customization:
 | `resize_factor` | 0.01 | default client resize factor |
 | `stealth` | false | show only button colors on hover (set button colors to border colors) |
 
+Custom Buttons: 
+------------
+Add a custom button to `buttons` (`marked` in this example):
+
+``` 
+buttons = { "minimize", "maximize", "close", "marked" }
+
+```
+
+Define the button: 
+```
+button_marked_name = "my fancy custom button",
+button_marked_size = "25",
+button_marked_function = function(c) c.marked = not c.marked end,
+color_marked_focus = "#ff00ff",
+color_marked_normal = "#ffff00",
+color_marked_hover = "#ff0000",
+```
 
 Example Configuration (as shown on gif): 
 ------------
