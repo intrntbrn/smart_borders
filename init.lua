@@ -498,7 +498,7 @@ local function new(config)
                         b.button_size = cfg["button_" .. btn .. "_size"] or button_size
                         b.color_focus = cfg["color_" .. btn .. "_focus"] or "#ff00ff"
                         b.color_normal = cfg["color_" .. btn .. "_normal"] or "#ff00ff"
-                        b.color_hover = cfg["color_" .. btn .. "_normal"] or "#ff1aff"
+                        b.color_hover = cfg["color_" .. btn .. "_hover"] or "#ff1aff"
                         b.action = cfg["button_" .. btn .. "_function"] or nil
                     end
 
