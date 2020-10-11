@@ -3,7 +3,6 @@ local gears = require("gears")
 local awful = require("awful")
 local theme = require("beautiful")
 local naughty = require("naughty")
-
 local dpi = theme.xresources.apply_dpi
 
 local module = {}
@@ -23,6 +22,14 @@ local function list2map(list)
         set[l] = true
     end
     return set
+end
+
+local function len(T)
+    local count = 0
+    for _ in pairs(T) do
+        count = count + 1
+    end
+    return count
 end
 
 local function doubleclicked(obj)
@@ -84,7 +91,7 @@ local menu_move2screen = function(c)
     return nil
 end
 
-function module.menu_client(c)
+function module.menu_client(custom_menu, c)
     local list = {}
 
     local list_tags = menu_move2tag(c)
@@ -160,6 +167,39 @@ function module.menu_client(c)
         end
     })
 
+    if custom_menu and len(custom_menu) > 0 then
+        local function generate_menu_entry(e)
+            if e and type(e) == 'table' and e.text then
+                local text = ""
+                if type(e.text) == 'string' then
+                    text = e.text
+                end
+                if type(e.text) == 'function' then
+                    text = e.text(c)
+                end
+                return {
+                    text,
+                    function()
+                        if e.func then
+                            e.func(c)
+                        end
+                    end
+                }
+            end
+        end
+
+        for regex, entries in pairs(custom_menu) do
+            if string.find(c.class, regex) then
+                for _, e in ipairs(entries) do
+                    local menu_entry = generate_menu_entry(e)
+                    if menu_entry then
+                        table.insert(list, menu_entry)
+                    end
+                end
+            end
+        end
+    end
+
     return list
 end
 
@@ -229,6 +269,8 @@ local function new(config)
 
     local show_button_tooltips = cfg.show_button_tooltips or false -- tooltip might intercept mouseclicks; not recommended!
     local show_title_tooltip = cfg.show_title_tooltip or false -- might fuck up sloppy mouse focus; not recommended!
+
+    local custom_menu_entries = cfg.custom_menu_entries or {}
     menu_selection_symbol = cfg.menu_selection_symbol or " ✔"
 
     local layout = cfg.layout or "fixed" -- "fixed" | "ratio"
@@ -256,7 +298,7 @@ local function new(config)
         if c.client_menu then
             c.client_menu:hide()
         end
-        c.client_menu = awful.menu(module.menu_client(c))
+        c.client_menu = awful.menu(module.menu_client(custom_menu_entries, c))
         c.client_menu:toggle()
     end
 
@@ -377,7 +419,7 @@ local function new(config)
         color_hover = color_top_hover,
         button_size = button_top_size,
         action = function(cl)
-            cl.top = not cl.top
+            cl.ontop = not cl.ontop
         end
     }
 

@@ -96,6 +96,7 @@ Customization:
 | `snapping` | false | enable snapping mode (see snapping section) |
 | `snapping_max_distance` | nil | maximum snapping distance (mouse to client border) |
 | `snapping_center_mouse` | false | center mouse on client when snapping |
+| `custom_menu_entries` | {} | list of custom menu entries (see custom menues section) |
 
 Snapping: 
 ------------
@@ -122,6 +123,48 @@ awful.mouse.append_global_mousebindings({
 })
 -- }}}
 
+```
+
+Custom Menues: 
+------------
+It is possible to add your own menu entries. Entries can be added globally or only for certain classes based on regex matching.
+
+```
+custom_menu_entries = {
+    ["Chromium"] = {
+        {
+            text = "toggle tabbar",
+            func = function(c)
+                keygrabber.stop()
+                root.fake_input("key_press", "F11")
+                awful.spawn.easy_async_with_shell("sleep 0.15", function()
+                    c.fullscreen = false
+                end)
+                root.fake_input("key_release", "F11")
+            end
+        }
+    },
+    -- for every client:
+    [".*"] = {
+        {
+            text = "toggle top overlay",
+            func = function(c)
+                if c.floating and c.ontop and c.sticky then
+                    c.floating = false
+                    c.ontop = false
+                    c.sticky = false
+                else
+                    c.floating = true
+                    c.width = 640
+                    c.height = 360
+                    c.ontop = true
+                    c.sticky = true
+                    awful.placement.top_right(c)
+                end
+            end
+        }
+    }
+}
 ```
 
 
