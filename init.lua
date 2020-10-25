@@ -326,25 +326,35 @@ local function new(config)
         end
     end
 
-    button_funcs[1] = left_click_function
+    client.connect_signal("smart_borders::left_click", left_click_function)
+    client.connect_signal("smart_borders::middle_click", button_middle_click)
+    client.connect_signal("smart_borders::right_click", button_right_click)
+    client.connect_signal("smart_borders::wheel_up", button_wheel_up)
+    client.connect_signal("smart_borders::wheel_down", button_wheel_down)
+    client.connect_signal("smart_borders::back_click", button_back)
+    client.connect_signal("smart_borders::forward_click", button_forward)
+
+    button_funcs[1] = function(c)
+        c:emit_signal("smart_borders::left_click")
+    end
 
     button_funcs[2] = function(c)
-        button_middle_click(c)
+        c:emit_signal("smart_borders::middle_click")
     end
     button_funcs[3] = function(c)
-        button_right_click(c)
+        c:emit_signal("smart_borders::right_click")
     end
     button_funcs[4] = function(c)
-        button_wheel_up(c)
+        c:emit_signal("smart_borders::wheel_up")
     end
     button_funcs[5] = function(c)
-        button_wheel_down(c)
+        c:emit_signal("smart_borders::wheel_down")
     end
     button_funcs[8] = function(c)
-        button_back(c)
+        c:emit_signal("smart_borders::back_click")
     end
     button_funcs[9] = function(c)
-        button_forward(c)
+        c:emit_signal("smart_borders::forward_click")
     end
     local function handle_button_press(c, button)
         local func = button_funcs[button]

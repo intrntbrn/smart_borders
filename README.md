@@ -34,16 +34,16 @@ If you end up using this module, consider removing default titlebar initializati
 Controls:
 ------------
 
-| button | default action | handler |
-|---|---|---|
-| <kbd>left click</kbd> | move client | `button_left_click`
-| <kbd>right click</kbd> | open client menu | `button_right_click`
-| <kbd>double left click</kbd> | toggle maximize | `button_double_click`
-| <kbd>middle click</kbd> | resize client | `button_middle_click`
-| <kbd>mousewheel up</kbd> | increase client height | `button_wheel_up`
-| <kbd>mousewheel down</kbd> | decrease client height | `button_wheel_down`
-| <kbd>mouse forward</kbd> | swap client with next client by index | `button_forward`
-| <kbd>mouse back</kbd> | swap client with previous client by index | `button_back`
+| button | default action | handler | signal |
+|---|---|---|---|
+| <kbd>left click</kbd> | move client | `button_left_click` | `smart_borders::left_click`
+| <kbd>right click</kbd> | open client menu | `button_right_click`| `smart_borders::right_click`
+| <kbd>double left click</kbd> | toggle maximize | `button_double_click` | `smart_borders::left_click`
+| <kbd>middle click</kbd> | resize client | `button_middle_click` | `smart_borders::middle_click`
+| <kbd>mousewheel up</kbd> | increase client height | `button_wheel_up` | `smart_borders::wheel_up`
+| <kbd>mousewheel down</kbd> | decrease client height | `button_wheel_down` | `smart_borders::wheel_down`
+| <kbd>mouse forward</kbd> | swap client with next client by index | `button_forward` | `smart_borders::forward_click`
+| <kbd>mouse back</kbd> | swap client with previous client by index | `button_back` | `smart_borders::back_click`
 
 Customization:
 ------------
@@ -245,6 +245,11 @@ require("smart_borders"){
 		-- set client as master
 		c:swap(awful.client.getmaster())
 	end
+    
+    -- add rightclick menu to your tasklist
+    -- awful.button({}, 3, function(c)
+    --     c:emit_signal("smart_borders::right_click")
+    -- end)
 }
 
 ```
