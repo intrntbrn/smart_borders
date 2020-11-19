@@ -466,6 +466,10 @@ local function new(config)
                     end
                 end
 
+                if closest_c and closest_c.valid then
+                    closest_c:emit_signal("request::activate", "smart_borders::snapping", {raise = true})
+                end
+
                 return closest_c
             end
 
