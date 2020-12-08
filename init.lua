@@ -517,7 +517,12 @@ local function new(config)
         local button_widgets = {}
 
         local border_bg = wibox.widget.base.make_widget_declarative(
-            {id = "border_bg", bg = color_normal, widget = wibox.container.background})
+            {
+                {widget = wibox.container.margin},
+                id = "border_bg",
+                bg = color_normal,
+                widget = wibox.container.background
+            })
 
         border_bg:connect_signal("button::press", function(_, _, _, button)
             handle_button_press(c, button)
@@ -637,6 +642,7 @@ local function new(config)
 
                     local button_widget = wibox.widget.base.make_widget_declarative(
                         {
+                            {widget = wibox.container.margin},
                             id = b.name,
                             forced_width = ori(pos) == "h" and b.button_size or nil,
                             forced_height = ori(pos) == "v" and b.button_size or nil,
