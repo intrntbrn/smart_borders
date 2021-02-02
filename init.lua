@@ -188,8 +188,9 @@ function module.menu_client(custom_menu, c)
             end
         end
 
+        local class = c.class or ""
         for regex, entries in pairs(custom_menu) do
-            if string.find(c.class, regex) then
+            if string.find(class, regex) then
                 for _, e in ipairs(entries) do
                     local menu_entry = generate_menu_entry(e)
                     if menu_entry then
