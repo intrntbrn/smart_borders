@@ -506,6 +506,18 @@ local function new(config)
                     if c then
                         button_wheel_down(c)
                     end
+                end),
+                awful.button({}, 8, function()
+                    local c = mouse_closest_client()
+                    if c then
+                        button_back(c)
+                    end
+                end),
+                awful.button({}, 9, function()
+                    local c = mouse_closest_client()
+                    if c then
+                        button_forward(c)
+                    end
                 end)
             })
         else
