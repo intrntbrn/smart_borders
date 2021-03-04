@@ -775,7 +775,7 @@ local function new(config)
         end)
     end
 
-    client.connect_signal("request::titlebars", smart_border_titlebars)
+    client.connect_signal("manage", smart_border_titlebars)
 end
 
 return setmetatable(module, {
