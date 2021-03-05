@@ -214,64 +214,64 @@ E.g. you might want add the rightclick menu to your tasklist:
 Example Configuration (as shown on top gif): 
 ------------
 ```
-require("smart_borders"){
-	show_button_tooltips = true,
+require("smart_borders") {
+    show_button_tooltips = true,
 
-	button_positions = { "top" },
-	buttons = { "floating", "minimize", "maximize", "close" },
+    button_positions = {"top"},
+    buttons = {"floating", "minimize", "maximize", "close"},
 
-	layout = "fixed",
-	align_horizontal = "center",
-	button_size = 40,
-	button_floating_size = 60,
-	button_close_size = 60,
-	border_width = 6,
+    layout = "fixed",
+    align_horizontal = "center",
+    button_size = 40,
+    button_floating_size = 60,
+    button_close_size = 60,
+    border_width = 6,
 
-	color_close_normal = {
-		type = "linear",
-		from = { 0, 0 },
-		to = { 60, 0 },
-		stops = { { 0, "#fd8489" }, { 1, "#56666f" } }
-	},
-	color_close_focus = {
-		type = "linear",
-		from = { 0, 0 },
-		to = { 60, 0 },
-		stops = { { 0, "#fd8489" }, { 1, "#a1bfcf" } }
-	},
-	color_close_hover = {
-		type = "linear",
-		from = { 0, 0 },
-		to = { 60, 0 },
-		stops = { { 0, "#FF9EA3" }, { 1, "#a1bfcf" } }
-	},
-	color_floating_normal = {
-		type = "linear",
-		from = { 0, 0 },
-		to = { 40, 0 },
-		stops = { { 0, "#56666f" }, { 1, "#ddace7" } }
-	},
-	color_floating_focus = {
-		type = "linear",
-		from = { 0, 0 },
-		to = { 40, 0 },
-		stops = { { 0, "#a1bfcf" }, { 1, "#ddace7" } }
-	},
-	color_floating_hover = {
-		type = "linear",
-		from = { 0, 0 },
-		to = { 40, 0 },
-		stops = { { 0, "#a1bfcf" }, { 1, "#F7C6FF" } }
-	},
+    color_close_normal = {
+        type = "linear",
+        from = {0, 0},
+        to = {60, 0},
+        stops = {{0, "#fd8489"}, {1, "#56666f"}}
+    },
+    color_close_focus = {
+        type = "linear",
+        from = {0, 0},
+        to = {60, 0},
+        stops = {{0, "#fd8489"}, {1, "#a1bfcf"}}
+    },
+    color_close_hover = {
+        type = "linear",
+        from = {0, 0},
+        to = {60, 0},
+        stops = {{0, "#FF9EA3"}, {1, "#a1bfcf"}}
+    },
+    color_floating_normal = {
+        type = "linear",
+        from = {0, 0},
+        to = {40, 0},
+        stops = {{0, "#56666f"}, {1, "#ddace7"}}
+    },
+    color_floating_focus = {
+        type = "linear",
+        from = {0, 0},
+        to = {40, 0},
+        stops = {{0, "#a1bfcf"}, {1, "#ddace7"}}
+    },
+    color_floating_hover = {
+        type = "linear",
+        from = {0, 0},
+        to = {40, 0},
+        stops = {{0, "#a1bfcf"}, {1, "#F7C6FF"}}
+    },
 
     snapping = true,
     snapping_center_mouse = true,
 
-	-- custom control example:
-	button_back = function(c)
-		-- set client as master
-		c:swap(awful.client.getmaster())
-	end
+    -- custom control example:
+    button_back = function(c)
+        -- set client as master
+        c:swap(awful.client.getmaster())
+    end
 }
 
 ```
