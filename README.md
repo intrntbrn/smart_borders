@@ -187,7 +187,31 @@ color_marked_normal = "#ffff00",
 color_marked_hover = "#ff0000",
 ```
 
-Example Configuration (as shown on gif): 
+Integration / Signals: 
+------------
+It is possible to use `smart_borders` features in other modules by emitting signals.
+
+E.g. you might want add the rightclick menu to your tasklist: 
+
+```
+   -- @TASKLIST_BUTTON@
+    -- Create a tasklist widget
+    s.mytasklist = awful.widget.tasklist {
+        screen  = s,
+        filter  = awful.widget.tasklist.filter.currenttags,
+        buttons = {
+            awful.button({ }, 1, function(c)
+                c:activate { context = "tasklist", action = "toggle_minimization" }
+            end),
+            awful.button({ }, 3, function(c)
+                c:emit_signal("smart_borders::right_click")
+            end),
+        }
+    }
+```
+
+
+Example Configuration (as shown on top gif): 
 ------------
 ```
 require("smart_borders"){
@@ -240,16 +264,14 @@ require("smart_borders"){
 		stops = { { 0, "#a1bfcf" }, { 1, "#F7C6FF" } }
 	},
 
+    snapping = true,
+    snapping_center_mouse = true,
+
 	-- custom control example:
 	button_back = function(c)
 		-- set client as master
 		c:swap(awful.client.getmaster())
 	end
-    
-    -- add rightclick menu to your tasklist
-    -- awful.button({}, 3, function(c)
-    --     c:emit_signal("smart_borders::right_click")
-    -- end)
 }
 
 ```
