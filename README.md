@@ -194,20 +194,19 @@ It is possible to use `smart_borders` features in other modules by emitting sign
 E.g. you might want add the rightclick menu to your tasklist: 
 
 ```
-   -- @TASKLIST_BUTTON@
-    -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist {
-        screen  = s,
-        filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = {
-            awful.button({ }, 1, function(c)
-                c:activate { context = "tasklist", action = "toggle_minimization" }
-            end),
-            awful.button({ }, 3, function(c)
-                c:emit_signal("smart_borders::right_click")
-            end),
-        }
+-- @TASKLIST_BUTTON@
+-- Create a tasklist widget
+s.mytasklist = awful.widget.tasklist {
+    screen = s,
+    filter = awful.widget.tasklist.filter.currenttags,
+    buttons = {
+        awful.button({}, 1, function(c)
+            c:activate{context = "tasklist", action = "toggle_minimization"}
+        end), awful.button({}, 3, function(c)
+            c:emit_signal("smart_borders::right_click")
+        end)
     }
+}
 ```
 
 
