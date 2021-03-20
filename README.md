@@ -323,7 +323,25 @@ require("smart_borders") {
     button_back = function(c)
         -- set client as master
         c:swap(awful.client.getmaster())
-    end
-}
+    end,
 
+    -- hot_corners
+    hot_corners_color = "#FD8489",
+    hot_corners_width = 10,
+    hot_corners_height = 10,
+    hot_corners = {
+        ["top_right"] = {
+            left_click = function()
+                -- unfullscreen the focused client with left click
+                local c = client.focus
+                if c and c.fullscreen then
+                    c.fullscreen = false
+                end
+            end,
+            middle_click = function()
+                awesome.restart()
+            end,
+        }
+    },
+}
 ```
