@@ -8,6 +8,7 @@ smart_borders for awesomewm
 Features:
 ------------
 - Full titlebar functionality without sacrificing space
+- Hot corners
 - Improved mouse controls
 - Custom client menu
 - Anti-aliased rounded corners
@@ -97,8 +98,12 @@ Customization:
 | `snapping_max_distance` | nil | maximum snapping distance (mouse to client border) |
 | `snapping_center_mouse` | false | center mouse on client when snapping |
 | `custom_menu_entries` | {} | list of custom menu entries (see custom menues section) |
+| `hot_corners` | {} | hot_corners definitions (see hot corners section)|
+| `hot_corners_color` | "#00000000" | color of hot_corners |
+| `hot_corners_width` | dpi(1) | width of hot_corners |
+| `hot_corners_height` | dpi(1) | height of hot_corners |
 
-Snapping: 
+Snapping:
 ------------
 When `useless_gaps` are disabled it is very easy and fast to control clients by using the mouse since you only have to move your mouse to the edge of the screen to hit the client border.
 However, when `useless_gaps` are enabled it can be frustrating to hit the border. 
@@ -125,7 +130,57 @@ awful.mouse.append_global_mousebindings({
 
 ```
 
-Custom Menues: 
+Hot Corners:
+------------
+
+<p align="center">
+  <img src="https://s4.gifyu.com/images/hot_corner.gif">
+</p>
+
+Execute custom functions at the corners of your screen (e.g. appmenu, volume control, etc.).
+
+```
+hot_corners = {
+    ["top_right"] = {
+        left_click = function()
+            require("naughty").notify({text = "left_click"})
+        end,
+        right_click = function()
+            require("naughty").notify({text = "right_click"})
+        end,
+        middle_click = function()
+            require("naughty").notify({text = "middle_click"})
+        end,
+        forward_click = function()
+            require("naughty").notify({text = "forward_click"})
+        end,
+        back_click = function()
+            require("naughty").notify({text = "back_click"})
+        end,
+        wheel_up = function()
+            require("naughty").notify({text = "wheel_up"})
+        end,
+        wheel_down = function()
+            require("naughty").notify({text = "wheel_down"})
+        end,
+        enter = function()
+            require("naughty").notify({text = "enter"})
+        end,
+        leave = function()
+            require("naughty").notify({text = "leave"})
+        end
+    }
+}
+```
+Possible positions are "top_left", "top_right", "bottom_left", "bottom_right" or any `awful.placement` defintion (e.g. "centered").
+
+Execution can also be scriped:
+
+```
+echo "awesome.emit_signal('hot_corners::top_right::left_click')" | awesome-client
+```
+
+Custom Menues:
 ------------
 It is possible to add your own menu entries. Entries can be added globally or only for certain classes based on regex matching.
 
@@ -168,13 +223,12 @@ custom_menu_entries = {
 ```
 
 
-Custom Buttons: 
+Custom Buttons:
 ------------
 Add a custom button to `buttons` (`marked` in this example):
 
 ``` 
 buttons = { "minimize", "maximize", "close", "marked" }
-
 ```
 
 Define the button: 
@@ -187,7 +241,7 @@ color_marked_normal = "#ffff00",
 color_marked_hover = "#ff0000",
 ```
 
-Integration / Signals: 
+Integration / Signals:
 ------------
 It is possible to use `smart_borders` features in other modules by emitting signals.
 
@@ -209,8 +263,7 @@ s.mytasklist = awful.widget.tasklist {
 }
 ```
 
-
-Example Configuration (as shown on top gif): 
+Example Configuration (as shown on top gif):
 ------------
 ```
 require("smart_borders") {

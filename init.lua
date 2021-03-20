@@ -217,6 +217,76 @@ local rounded_corner_shape = function(radius, position)
     return nil
 end
 
+local add_hot_corner = function(args)
+    args = args or {}
+    local position = args.position or ""
+    local placement = awful.placement[position]
+    if not placement then
+        return
+    end
+    local actions = args.buttons or {}
+    local s = args.screen or awful.screen.focused()
+    local width = args.width
+    local height = args.height
+    local color = args.color
+
+    local corner = awful.popup({
+        screen = s,
+        placement = placement,
+        ontop = true,
+        border_width = 0,
+        minimum_height = height,
+        maximum_height = height,
+        minimum_width = width,
+        maximum_width = width,
+        bg = color,
+        widget = wibox.widget.background
+    })
+
+    -- this will run for every screen, so we have to make sure to only add one signal handler for every assigned signal
+    local must_connect_signal = (s.index == 1)
+
+    local function signal_name(pos, action)
+        return "hot_corners::" .. pos .. "::" .. action
+    end
+
+    local defs = {
+        {name = "left_click", button = 1},
+        {name = "middle_click", button = 2},
+        {name = "right_click", button = 3},
+        {name = "wheel_up", button = 4},
+        {name = "wheel_down", button = 5},
+        {name = "back_click", button = 8},
+        {name = "forward_click", button = 9}
+    }
+
+    local buttons = {}
+    for _, btn in ipairs(defs) do
+        if actions[btn.name] then
+            local signal = signal_name(position, btn.name)
+            table.insert(buttons, awful.button({}, btn.button, function()
+                awesome.emit_signal(signal)
+            end))
+            if must_connect_signal then
+                awesome.connect_signal(signal, actions[btn.name])
+            end
+        end
+    end
+    corner:buttons(buttons)
+
+    for _, action in pairs({"enter", "leave"}) do
+        if actions[action] then
+            local signal = signal_name(position, action)
+            corner:connect_signal("mouse::" .. action, function()
+                awesome.emit_signal(signal)
+            end)
+            if must_connect_signal then
+                awesome.connect_signal(signal, actions[action])
+            end
+        end
+    end
+end
+
 local function new(config)
     local cfg = config or {}
     local positions = cfg.positions or {"left", "right", "top", "bottom"}
@@ -267,6 +337,11 @@ local function new(config)
     local snapping = cfg.snapping or false
     local snapping_center_mouse = cfg.snapping_center_mouse or false
     local snapping_max_distance = cfg.snapping_max_distance or nil
+
+    local hot_corners = cfg.hot_corners or {}
+    local hot_corners_color = cfg.hot_corners_color or "#00000000"
+    local hot_corners_width = cfg.hot_corners_width or dpi(1)
+    local hot_corners_height = cfg.hot_corners_height or dpi(1)
 
     local show_button_tooltips = cfg.show_button_tooltips or false -- tooltip might intercept mouseclicks; not recommended!
     local show_title_tooltip = cfg.show_title_tooltip or false -- might fuck up sloppy mouse focus; not recommended!
@@ -433,6 +508,19 @@ local function new(config)
             cl.ontop = not cl.ontop
         end
     }
+
+    for s in screen do
+        for pos, buttons in pairs(hot_corners) do
+            add_hot_corner({
+                buttons = buttons,
+                screen = s,
+                position = pos,
+                color = hot_corners_color,
+                width = hot_corners_width,
+                height = hot_corners_height
+            })
+        end
+    end
 
     if layout ~= "fixed" and layout ~= "ratio" then
         layout = "fixed"
