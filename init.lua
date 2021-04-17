@@ -9,6 +9,30 @@ local module = {}
 
 local client, screen, mouse = client, screen, mouse
 
+local instances = {}
+
+local function update_on_signal(c, signal, widget)
+    local sig_instances = instances[signal]
+    if sig_instances == nil then
+        sig_instances = setmetatable({}, {__mode = "k"})
+        instances[signal] = sig_instances
+        client.connect_signal(signal, function(cl)
+            local widgets = sig_instances[cl]
+            if widgets then
+                for _, w in pairs(widgets) do
+                    w.update()
+                end
+            end
+        end)
+    end
+    local widgets = sig_instances[c]
+    if widgets == nil then
+        widgets = setmetatable({}, {__mode = "v"})
+        sig_instances[c] = widgets
+    end
+    table.insert(widgets, widget)
+end
+
 local function ori(pos)
     if pos == "left" or pos == "right" then
         return "v"
@@ -63,7 +87,7 @@ local menu_move2tag = function(c, scr)
                 t.index .. ": " .. t.name .. menu_marker(t.selected) .. " ",
                 function()
                     c:move_to_tag(t)
-                end
+                end,
             }
             table.insert(list, entry)
         end
@@ -109,7 +133,7 @@ function module.menu_client(custom_menu, c)
         function()
             c.fullscreen = not c.fullscreen
             c:raise()
-        end
+        end,
     })
 
     table.insert(list, {
@@ -117,28 +141,28 @@ function module.menu_client(custom_menu, c)
         function()
             c.maximized = not c.maximized
             c:raise()
-        end
+        end,
     })
 
     table.insert(list, {
         "master" .. menu_marker(c == awful.client.getmaster()),
         function()
             c:swap(awful.client.getmaster())
-        end
+        end,
     })
 
     table.insert(list, {
         "sticky" .. menu_marker(c.sticky),
         function()
             c.sticky = not c.sticky
-        end
+        end,
     })
 
     table.insert(list, {
         "top" .. menu_marker(c.ontop),
         function()
             c.ontop = not c.ontop
-        end
+        end,
     })
 
     table.insert(list, {
@@ -150,21 +174,21 @@ function module.menu_client(custom_menu, c)
             else
                 c.minimized = true
             end
-        end
+        end,
     })
 
     table.insert(list, {
         "floating" .. menu_marker(c.floating),
         function()
             c.floating = not c.floating
-        end
+        end,
     })
 
     table.insert(list, {
         menu_marker(nil) .. "close",
         function()
             c:kill()
-        end
+        end,
     })
 
     if custom_menu and len(custom_menu) > 0 then
@@ -183,7 +207,7 @@ function module.menu_client(custom_menu, c)
                         if e.func then
                             e.func(c)
                         end
-                    end
+                    end,
                 }
             end
         end
@@ -240,7 +264,7 @@ local add_hot_corner = function(args)
         minimum_width = width,
         maximum_width = width,
         bg = color,
-        widget = wibox.widget.background
+        widget = wibox.widget.background,
     })
 
     -- this will run for every screen, so we have to make sure to only add one signal handler for every assigned signal
@@ -257,7 +281,7 @@ local add_hot_corner = function(args)
         {name = "wheel_up", button = 4},
         {name = "wheel_down", button = 5},
         {name = "back_click", button = 8},
-        {name = "forward_click", button = 9}
+        {name = "forward_click", button = 9},
     }
 
     local buttons = {}
@@ -297,6 +321,8 @@ local function new(config)
     local color_normal = cfg.color_normal or "#56666f"
     local color_focus = cfg.color_focus or "#a1bfcf"
     local color_hover = cfg.color_hover or nil
+    local color_floating = cfg.color_floating or nil
+    local color_maximized = cfg.color_maximized or nil
 
     local button_size = cfg.button_size or dpi(40)
     local spacing_widget = cfg.spacing_widget or nil
@@ -448,7 +474,7 @@ local function new(config)
         button_size = button_maximize_size,
         action = function(cl)
             cl.maximized = not cl.maximized
-        end
+        end,
     }
 
     button_definitions["minimize"] = {
@@ -462,7 +488,7 @@ local function new(config)
             awful.spawn.easy_async_with_shell("sleep 0", function()
                 cl.minimized = true
             end)
-        end
+        end,
     }
 
     button_definitions["floating"] = {
@@ -473,7 +499,7 @@ local function new(config)
         button_size = button_floating_size,
         action = function(cl)
             cl.floating = not cl.floating
-        end
+        end,
     }
 
     button_definitions["close"] = {
@@ -484,7 +510,7 @@ local function new(config)
         button_size = button_close_size,
         action = function(cl)
             cl:kill()
-        end
+        end,
     }
 
     button_definitions["sticky"] = {
@@ -495,7 +521,7 @@ local function new(config)
         button_size = button_sticky_size,
         action = function(cl)
             cl.sticky = not cl.sticky
-        end
+        end,
     }
 
     button_definitions["top"] = {
@@ -506,7 +532,7 @@ local function new(config)
         button_size = button_top_size,
         action = function(cl)
             cl.ontop = not cl.ontop
-        end
+        end,
     }
 
     for s in screen do
@@ -517,7 +543,7 @@ local function new(config)
                 position = pos,
                 color = hot_corners_color,
                 width = hot_corners_width,
-                height = hot_corners_height
+                height = hot_corners_height,
             })
         end
     end
@@ -607,7 +633,7 @@ local function new(config)
                     if c then
                         button_forward(c)
                     end
-                end)
+                end),
             })
         else
             naughty.notify({title = "smart_borders", text = "snapping requires awesomewm git version!", timeout = 0})
@@ -622,7 +648,7 @@ local function new(config)
                 {widget = wibox.container.margin},
                 id = "border_bg",
                 bg = color_normal,
-                widget = wibox.container.background
+                widget = wibox.container.background,
             })
 
         border_bg:connect_signal("button::press", function(_, _, _, button)
@@ -652,14 +678,14 @@ local function new(config)
                     content_fill_vertical = true,
                     content_fill_horizontal = true,
                     border_bg,
-                    widget = wibox.container.place
+                    widget = wibox.container.place,
                 })
             border_expander = wibox.widget.base.make_widget_declarative(
                 {
                     {layout = wibox.layout.fixed.horizontal},
                     border_bg,
                     {layout = wibox.layout.fixed.horizontal},
-                    widget = wibox.layout.align.horizontal
+                    widget = wibox.layout.align.horizontal,
                 })
         end
 
@@ -692,7 +718,7 @@ local function new(config)
                                 align_vertical == "center" and button_layout or expander,
                                 align_vertical == "bottom" and button_layout or expander,
                                 expand = align_vertical == "center" and "none" or "inside",
-                                layout = wibox.layout.align.vertical
+                                layout = wibox.layout.align.vertical,
                             })
                     else
                         local expander = align_horizontal == "center" and border_expander_center or border_expander
@@ -702,7 +728,7 @@ local function new(config)
                                 align_horizontal == "center" and button_layout or expander,
                                 align_horizontal == "right" and button_layout or expander,
                                 expand = align_horizontal == "center" and "none" or "inside",
-                                layout = wibox.layout.align.horizontal
+                                layout = wibox.layout.align.horizontal,
                             })
                     end
                 end
@@ -716,14 +742,14 @@ local function new(config)
                     titlebar_widget,
                     bg = "#00000000",
                     shape = rounded_corner and rounded_corner_shape(rounded_corner, pos) or nil,
-                    widget = wibox.container.background()
+                    widget = wibox.container.background(),
                 }
 
                 local ratio_button_layout = wibox.widget.base.make_widget_declarative(
                     {
                         homogeneous = layout == "ratio" and true or false,
                         expand = true,
-                        layout = ori(pos) == "h" and wibox.layout.grid.horizontal or wibox.layout.grid.vertical
+                        layout = ori(pos) == "h" and wibox.layout.grid.horizontal or wibox.layout.grid.vertical,
                     })
 
                 local list_of_buttons = {}
@@ -748,7 +774,7 @@ local function new(config)
                             forced_width = ori(pos) == "h" and b.button_size or nil,
                             forced_height = ori(pos) == "v" and b.button_size or nil,
                             bg = b.color_normal,
-                            widget = wibox.container.background
+                            widget = wibox.container.background,
                         })
 
                     if show_button_tooltips then
@@ -756,7 +782,7 @@ local function new(config)
                             objects = {button_widget},
                             timer_function = function()
                                 return b.name
-                            end
+                            end,
                         }
                     end
 
@@ -793,6 +819,19 @@ local function new(config)
                     table.insert(list_of_buttons, button_widget)
 
                     button_widgets[b.name] = button_widget
+
+                    local update = function()
+                        if client.focus == c then
+                            button_widget.bg = stealth and color_focus or b.color_focus
+                            return
+                        end
+                        button_widget.bg = stealth and color_normal or b.color_normal
+                    end
+
+                    button_widget.update = update
+
+                    update_on_signal(c, "focus", button_widget)
+                    update_on_signal(c, "unfocus", button_widget)
                 end
 
                 if layout == "ratio" then
@@ -825,7 +864,7 @@ local function new(config)
                     border_bg,
                     bg = "#00000000",
                     shape = rounded_corner and rounded_corner_shape(rounded_corner, pos) or nil,
-                    widget = wibox.container.background
+                    widget = wibox.container.background,
                 }
             end
         end
@@ -836,31 +875,35 @@ local function new(config)
                 objects = {border_bg},
                 timer_function = function()
                     return c.name
-                end
+                end,
             }
         end
 
-        -- focus
-        c:connect_signal("focus", function(_)
-            for k, btn in pairs(button_widgets) do
-                local b = button_definitions[k]
-                if b then
-                    btn.bg = stealth and color_focus or b.color_focus
-                end
+        local update_border = function()
+            if client.focus == c then
+                border_bg.bg = color_focus
+                return
             end
-            border_bg.bg = color_focus
-        end)
 
-        -- unfocus
-        c:connect_signal("unfocus", function(_)
-            for k, btn in pairs(button_widgets) do
-                local b = button_definitions[k]
-                if b then
-                    btn.bg = stealth and color_normal or b.color_normal
-                end
+            if color_maximized and c.maximized then
+                border_bg.bg = color_maximized
+                return
             end
+
+            if color_floating and c.floating then
+                border_bg.bg = color_floating
+                return
+            end
+
             border_bg.bg = color_normal
-        end)
+        end
+
+        border_bg.update = update_border
+
+        update_on_signal(c, "focus", border_bg)
+        update_on_signal(c, "unfocus", border_bg)
+        update_on_signal(c, "property::maximized", border_bg)
+        update_on_signal(c, "property::floating", border_bg)
     end
 
     client.connect_signal("request::tag", smart_border_titlebars)
@@ -870,5 +913,5 @@ return setmetatable(module, {
     __call = function(_, ...)
         new(...)
         return module
-    end
+    end,
 })
