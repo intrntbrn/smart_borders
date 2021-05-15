@@ -3,6 +3,7 @@ local gears = require("gears")
 local awful = require("awful")
 local theme = require("beautiful")
 local naughty = require("naughty")
+local glib = require("lgi").GLib
 local dpi = theme.xresources.apply_dpi
 
 local module = {}
@@ -31,6 +32,14 @@ local function update_on_signal(c, signal, widget)
         sig_instances[c] = widgets
     end
     table.insert(widgets, widget)
+end
+
+local glib_context = function(fn)
+    return function(args)
+        glib.idle_add(glib.PRIORITY_DEFAULT_IDLE, function()
+            fn(args)
+        end)
+    end
 end
 
 local function ori(pos)
@@ -292,7 +301,7 @@ local add_hot_corner = function(args)
                 awesome.emit_signal(signal)
             end))
             if must_connect_signal then
-                awesome.connect_signal(signal, actions[btn.name])
+                awesome.connect_signal(signal, glib_context(actions[btn.name]))
             end
         end
     end
@@ -305,7 +314,7 @@ local add_hot_corner = function(args)
                 awesome.emit_signal(signal)
             end)
             if must_connect_signal then
-                awesome.connect_signal(signal, actions[action])
+                awesome.connect_signal(signal, glib_context(actions[action]))
             end
         end
     end
