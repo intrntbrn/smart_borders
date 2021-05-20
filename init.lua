@@ -378,7 +378,7 @@ local function new(config)
     local hot_corners_width = cfg.hot_corners_width or dpi(1)
     local hot_corners_height = cfg.hot_corners_height or dpi(1)
 
-    local show_button_tooltips = cfg.show_button_tooltips or false -- tooltip might intercept mouseclicks; not recommended!
+    local show_button_tooltips = cfg.show_button_tooltips or false
     local show_title_tooltip = cfg.show_title_tooltip or false -- might fuck up sloppy mouse focus; not recommended!
 
     local custom_menu_entries = cfg.custom_menu_entries or {}
@@ -789,6 +789,7 @@ local function new(config)
                     if show_button_tooltips then
                         awful.tooltip {
                             objects = {button_widget},
+                            mode = 'outside',
                             timer_function = function()
                                 return b.name
                             end,
