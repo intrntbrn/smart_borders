@@ -789,6 +789,7 @@ local function new(config)
                     if show_button_tooltips then
                         awful.tooltip {
                             objects = {button_widget},
+                            align = "top_left",
                             timer_function = function()
                                 return b.name
                             end,
