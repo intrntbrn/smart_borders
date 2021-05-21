@@ -273,7 +273,7 @@ local add_hot_corner = function(args)
         minimum_width = width,
         maximum_width = width,
         bg = color,
-        widget = wibox.widget.background,
+        widget = wibox.container.background,
     })
 
     -- this will run for every screen, so we have to make sure to only add one signal handler for every assigned signal
