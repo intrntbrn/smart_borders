@@ -2,7 +2,7 @@ smart_borders for awesomewm
 ==================
 
 <p align="center">
-  <img src="https://s7.gifyu.com/images/smart_border_github.gif">
+  <img src="https://user-images.githubusercontent.com/1234183/123867816-20af9400-d92f-11eb-9204-6f4f814fcf1c.gif">
 </p>
 
 Features:
@@ -110,7 +110,7 @@ However, when `useless_gaps` are enabled it can be frustrating to hit the border
 Therefore `snapping` will snap to the closest client if you click on the desktop/wallpaper.
 
 <p align="center">
-  <img src="https://s7.gifyu.com/images/snapping.gif">
+  <img src="https://user-images.githubusercontent.com/1234183/123867834-29a06580-d92f-11eb-859c-4185b7966e23.gif">
 </p>
 
 Please note that `snapping` currently requires `awesomewm git` version.
@@ -134,7 +134,7 @@ Hot Corners:
 ------------
 
 <p align="center">
-  <img src="https://s4.gifyu.com/images/hot_corner.gif">
+  <img src="https://user-images.githubusercontent.com/1234183/123867845-2e651980-d92f-11eb-95e8-8944ea832f0d.gif">
 </p>
 
 Execute custom functions at the corners of your screen (e.g. appmenu, volume control, etc.).
