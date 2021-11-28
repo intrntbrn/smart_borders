@@ -8,7 +8,7 @@ local dpi = theme.xresources.apply_dpi
 
 local module = {}
 
-local client, screen, mouse = client, screen, mouse
+local client, screen, mouse, awesome = client, screen, mouse, awesome
 
 local instances = {}
 
@@ -552,9 +552,9 @@ local function new(config)
 	}
 
 	for s in screen do
-		for pos, buttons in pairs(hot_corners) do
+		for pos, btns in pairs(hot_corners) do
 			add_hot_corner({
-				buttons = buttons,
+				buttons = btns,
 				screen = s,
 				position = pos,
 				color = hot_corners_color,
@@ -659,8 +659,6 @@ local function new(config)
 	end
 
 	local smart_border_titlebars = function(c)
-		local button_widgets = {}
-
 		local border_bg = wibox.widget.base.make_widget_declarative({
 			{ widget = wibox.container.margin },
 			id = "border_bg",
@@ -836,8 +834,6 @@ local function new(config)
 					end)
 
 					table.insert(list_of_buttons, button_widget)
-
-					button_widgets[b.name] = button_widget
 
 					local update = function()
 						if client.focus == c then
