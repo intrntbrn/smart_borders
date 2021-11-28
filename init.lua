@@ -92,8 +92,9 @@ local menu_move2tag = function(c, scr)
 	for _, t in pairs(s.tags) do
 		if t ~= awful.screen.focused().selected_tag then
 			count = count + 1
+			local name = t.name or ""
 			local entry = {
-				t.index .. ": " .. t.name .. menu_marker(t.selected) .. " ",
+				t.index .. ": " .. name .. menu_marker(t.selected) .. " ",
 				function()
 					c:move_to_tag(t)
 				end,
