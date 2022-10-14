@@ -659,6 +659,10 @@ local function new(config)
 	end
 
 	local smart_border_titlebars = function(c)
+		if c.requests_no_titlebar then
+			return
+		end
+
 		local border_bg = wibox.widget.base.make_widget_declarative({
 			{ widget = wibox.container.margin },
 			id = "border_bg",
@@ -929,6 +933,15 @@ local function new(config)
 	end
 
 	client.connect_signal("request::tag", smart_border_titlebars)
+	client.connect_signal("property::titlebars_enabled", function(c)
+		for _, pos in pairs(positions) do
+			if c.titlebars_enabled == false then
+				awful.titlebar.hide(c, pos)
+			else
+				awful.titlebar.show(c, pos)
+			end
+		end
+	end)
 end
 
 return setmetatable(module, {
