@@ -241,6 +241,21 @@ color_marked_normal = "#ffff00",
 color_marked_hover = "#ff0000",
 ```
 
+Disable:
+------------
+To disable `smart_borders` for certain clients you can set the
+`disable_smart_borders` property:
+
+```
+ruled.client.append_rule({
+    id = "dont_show_smart_borders",
+    rule = { class = "myclass" },
+    properties = {
+        disable_smart_borders = true,
+    },
+})
+```
+
 Integration / Signals:
 ------------
 It is possible to use `smart_borders` features in other modules by emitting signals.

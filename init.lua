@@ -933,9 +933,9 @@ local function new(config)
 	end
 
 	client.connect_signal("request::tag", smart_border_titlebars)
-	client.connect_signal("property::titlebars_enabled", function(c)
+	client.connect_signal("property::disable_smart_borders", function(c)
 		for _, pos in pairs(positions) do
-			if c.titlebars_enabled == false then
+			if c.disable_smart_borders then
 				awful.titlebar.hide(c, pos)
 			else
 				awful.titlebar.show(c, pos)
