@@ -659,6 +659,10 @@ local function new(config)
 	end
 
 	local smart_border_titlebars = function(c)
+		if c.disable_smart_borders then
+			return
+		end
+
 		local border_bg = wibox.widget.base.make_widget_declarative({
 			{ widget = wibox.container.margin },
 			id = "border_bg",
