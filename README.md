@@ -73,6 +73,8 @@ Customization:
 | `color_normal` | "#56666f" | border color |
 | `color_focus` | "#a1bfcf" | border color when client is focused |
 | `color_hover` | nil | border color on border hover |
+| `color_maximized` | nil | border color when client is maximized |
+| `color_floating` | nil | border color when client is floating |
 | `color_maximize_normal` | "#a9dd9d" |  color of maximize button |
 | `color_maximize_focus` | "#a9dd9d" |  color of maximize button when client is focused |
 | `color_maximize_hover` | "#c3f7b7" |  color of maximize button on mouse hover |
